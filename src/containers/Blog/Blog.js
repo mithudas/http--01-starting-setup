@@ -9,7 +9,8 @@ import axios from 'axios';
 class Blog extends Component {
 state= {
 posts: [],
-selectedPostId:null
+selectedPostId:null,
+error:false
 }
 
 componentDidMount () {
@@ -25,39 +26,43 @@ componentDidMount () {
    }
    })
    this.setState({posts: updatedPosts});
+   }).catch(error=>{
+
+   console.log("error");
+   this.setState({error:true});
    });
 }
 
 postSelectHandler=(id)=>{
-
-console.log("id>>>" , id);
  this.setState({selectedPostId:id})
 }
 
 
     render () {
-    const posts = this.state.posts
-    .map(post=>{
-    return <Post
-    key={post.id}
-    title={post.title}
-    clicked={()=>this.postSelectHandler(post.id)}
-    author={post.author}/>
-    });
-
-        return (
-            <div>
-                <section className="Posts">
-                    {posts}
-                </section>
-                <section>
-                    <FullPost id={this.state.selectedPostId}/>
-                </section>
-                <section>
-                    <NewPost />
-                </section>
-            </div>
-        );
+    let posts = <p style={{textAlign: 'center'}}> Something went wrong </p>
+    if(!this.state.error){
+            posts = this.state.posts
+            .map(post=>{
+            return <Post
+            key={post.id}
+            title={post.title}
+            clicked={()=>this.postSelectHandler(post.id)}
+            author={post.author}/>
+            });
+    }
+    return (
+        <div>
+            <section className="Posts">
+                {posts}
+            </section>
+            <section>
+                <FullPost id={this.state.selectedPostId}/>
+            </section>
+            <section>
+                <NewPost />
+            </section>
+        </div>
+    );
     }
 }
 
